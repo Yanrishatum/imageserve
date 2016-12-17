@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/protected/config/config.php';
+require_once __DIR__ . '/protected/utils.php';
 
 $index = ! (isset($_GET['type']) && isset($_GET['file']));
 
@@ -12,9 +13,9 @@ if ($index) {
 $type = $_GET['type'];
 $file = $_GET['file'];
 
-$filelocation = __DIR__ . "/images/$type/$file.$type";
+$filelocation = findImage(__DIR__, $file, $type);
 
-if ( ! file_exists($filelocation)) {
+if ( $filelocation === false ) {
     header('HTTP/1.0 404 Not Found');
     include_once __DIR__ . '/protected/templates/error.phtml';
     die();

@@ -25,3 +25,22 @@ define('TWITTER_HANDLE', '@aerouk_');
 
 define('APP_NAME', 'application name');
 define('PASSKEY', 'password goes here');
+
+// list.php
+define('PUBLIC_LIST', false); // Allow image list access without password
+define('IMAGES_PER_PAGE', 20);
+
+// Multiuser support
+define('MULTIUSER', false);
+// Each user have an ID, access passkey and image storage path.
+// 'ID' => array('passkey'=>'user passkey', 'path'=>'where to hold images')
+// The 'default' used as a fallback user when no 'user' parameter present in request.
+// As with IMAGESERVE_DIR - path should start with a forward slash, and end without one.
+$users = array(
+   // DO NOT delete the 'default' user.
+  'default' => array(
+    "passkey"=>PASSKEY,
+    "path"=>"/images",
+    "public_list"=>PUBLIC_LIST
+  )
+);

@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        
+        <title><?php echo APP_NAME . " - list"; ?></title>
+        
+        <link rel="stylesheet" href="<?php echo IMAGESERVE_DIR; ?>/assets/css/style.css">
+        
+        <script src="https://cdn.rawgit.com/zenorocha/clipboard.js/v1.5.16/dist/clipboard.min.js"></script> <!-- TODO: Bundle? -->
+        
+        <?php if ($havePassword) : ?>
+        
+        <script>
+          function deleteImg(hash)
+          {
+            if (confirm("Are you sure you want delete it?"))
+            {
+              var req = new XMLHttpRequest();
+              req.open("POST", "delete.php");
+              req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+              req.onreadystatechange = function()
+              {
+                if (req.readyState === 4 && req.status === 200)
+                {
+                  if (req.status === 200 && req.responseText === "success")
+                  {
+                    location.reload();
+                  }
+                  else alert("Error occured during file deletion: " + req.responseText);
+                }
+              }
+              <?php
+                // Newlines because VSCode bugged.
+                $passRequest = "\"password=$password&user=$user&file=\""; ?>
+              req.send(
+                <?php
+                 echo $passRequest; ?> + hash);
+            }
+          }
+        </script>
+        
+        <?php endif; ?>
+    </head>
+
+    <body>
+        <div>
+        
+        <?php
+          $i = 0;
+          while ($i < $limit)
+          {
+            // TODO: Support for constants.
+            
+            echo "<div class='container'>";
+            $file = $files[$offset+$i];
+            
+            $hash = substr($file, strpos($file, '/')+1);
+            $type = substr($file, strpos($hash, '.')+1);
+            if ($type === "jpeg") $type = "j/";
+            elseif ($type === "gif") $type = "g/";
+            else $type = ""; // png
+            
+            $imgurl = IMAGESERVE_DIR.$dir."/".$file;
+            $fullURL = $protocol."://".$_SERVER['HTTP_HOST'].IMAGESERVE_DIR."/$type$hash";
+            
+            echo "<a href=\"$fullURL\"><img src=\"$imgurl\"></a>"; // Image with URL
+            echo "<p>#".($fileCount-($offset+$i))." | "; // Image index
+            echo "<input class='url-input' size='".strlen($fullURL)."' id='img_$i' readonly value=\"".$fullURL."\">"; // Text-box fo copying
+            echo " <button class='clipboard-copy-btn' data-clipboard-target='#img_$i'>Copy</button>"; // Copy button
+            if ($havePassword)
+            {
+              echo " <button onclick=\"deleteImg('".$file."')\">Delete</button>"; // Delete button
+            }
+            echo "</p></div>";
+            
+            $i = $i + 1;
+          }
+        ?>
+        
+        <div><p>
+          <?php
+            $i = 0;
+            $page = $page + 1;
+            $passAdd = $havePassword ? "&password=$password" : "";
+            if (isset($user)) $passAdd = $passAdd."&user=$user";
+            
+            while ($i < $pages)
+            {
+              $i = $i + 1;
+              if ($i == $page)
+              {
+                echo "<b>$i</b>";
+              }
+              else
+              {
+                echo "<a href=".IMAGESERVE_DIR."/list.php?page=$i$passAdd>$i</a>";
+              }
+            }
+          ?>
+        </p></div>
+        <?php
+          $time = microtime();
+          $time = explode(' ', $time);
+          $time = $time[1] + $time[0];
+          $finish = $time;
+          $total_time = round(($finish - $start), 4);
+        ?>
+        </div>
+        <script>
+          new Clipboard('.clipboard-copy-btn');
+        </script>
+        <p>
+            <a href="https://github.com/aerouk/imageserve">
+                Powered by <b>imageserve</b>
+            </a>
+
+            &middot; Page generated in <?php echo $total_time; ?> seconds
+        </p>
+    </body>
+</html>
