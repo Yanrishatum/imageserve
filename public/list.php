@@ -64,7 +64,7 @@
   $page = isset($_GET["page"]) ? intval($_GET["page"]) - 1 : 0;
   
   $fileCount = count($files);
-  $pages = ceil($fileCount / $perPage);
+  $pages = ceil($fileCount / IMAGES_PER_PAGE);
   $offset = $page * IMAGES_PER_PAGE;
   
   $limit = min($fileCount - $offset, IMAGES_PER_PAGE);

@@ -57,7 +57,7 @@
             $file = $files[$offset+$i];
             
             $hash = substr($file, strpos($file, '/')+1);
-            $type = substr($file, strpos($hash, '.')+1);
+            $type = substr($file, strpos($file, '.')+1);
             if ($type === "jpeg") $type = "j/";
             elseif ($type === "gif") $type = "g/";
             else $type = ""; // png
@@ -85,17 +85,17 @@
             $page = $page + 1;
             $passAdd = $havePassword ? "&password=$password" : "";
             if (isset($user)) $passAdd = $passAdd."&user=$user";
-            
+            echo "Gallery contains $fileCount images with ".IMAGES_PER_PAGE." images per page.<br>";
             while ($i < $pages)
             {
               $i = $i + 1;
               if ($i == $page)
               {
-                echo "<b>$i</b>";
+                echo "<b>$i</b> ";
               }
               else
               {
-                echo "<a href=".IMAGESERVE_DIR."/list.php?page=$i$passAdd>$i</a>";
+                echo "<a href=".IMAGESERVE_DIR."/list.php?page=$i$passAdd>$i</a> ";
               }
             }
           ?>

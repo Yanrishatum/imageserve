@@ -3,6 +3,19 @@
 require_once __DIR__ . '/protected/config/config.php';
 require_once __DIR__ . '/protected/utils.php';
 
+if ($_SERVER["REQUEST_METHOD"] === "GET")
+{
+    $dir = authorize($_GET['password'], $_POST['user']);
+    if ($dir === false)
+    {
+        include_once __DIR__.'/protected/templates/unathorized.phtml';
+        die();
+    }
+    
+    include_once __DIR__.'/protected/templates/upload.phtml';
+    
+}
+
 $dir = authorize($_POST['password'], $_POST['user']);
 if ($dir === false)
 {
